@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form with Table</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    
 </head>
 <body>
     <div class="container mt-5">
@@ -193,38 +192,8 @@
         function deleteRow(row) {
             row.remove();
         }
-
-        function fetchDataFromGoogleSheets() {
-            const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRvHRlGaRR_6lAMTL-vUJ9tyOhrQt9gJutgo-1MsJVERreN26EYt4lxhQEHcxLDhpcvPfrndTxX55ge/pubhtml?gid=217778771&single=true';
-
-            fetch(url)
-                .then(response => response.text())
-                .then(data => {
-                    // Parse the HTML data to extract table rows and cells
-                    const parser = new DOMParser();
-                    const htmlDoc = parser.parseFromString(data, 'text/html');
-                    const tableRows = htmlDoc.querySelectorAll('tr');
-
-                    // Remove existing rows in tableBody
-                    const tableBody = document.getElementById('tableBody');
-                    tableBody.innerHTML = '';
-
-                    // Add fetched rows to the HTML table
-                    tableRows.forEach(row => {
-                        const newRow = document.createElement('tr');
-                        row.querySelectorAll('td').forEach(cell => {
-                            const newCell = document.createElement('td');
-                            newCell.textContent = cell.textContent;
-                            newRow.appendChild(newCell);
-                        });
-                        tableBody.appendChild(newRow);
-                    });
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        }
-
-        // Call fetch data function on page load
-        document.addEventListener('DOMContentLoaded', fetchDataFromGoogleSheets);
     </script>
 </body>
 </html>
+
+
