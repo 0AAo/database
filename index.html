@@ -67,8 +67,30 @@
                 <tr>
                     <th scope="col">Name</th>
                     <th scope="col">Month</th>
-                    <th scope="col">Expenses Type</th>
-                    <th scope="col">Total</th>
+                    <th scope="col">Gaji</th>
+                    <th scope="col">Petrol</th>
+                    <th scope="col">Toll</th>
+                    <th scope="col">Parking</th>
+                    <th scope="col">Staff Refreshment</th>
+                    <th scope="col">Staff Entertainment</th>
+                    <th scope="col">Client Entertainment</th>
+                    <th scope="col">Medical</th>
+                    <th scope="col">Mileage Claim</th>
+                    <th scope="col">Hotel</th>
+                    <th scope="col">Transport</th>
+                    <th scope="col">Upkeep Office</th>
+                    <th scope="col">Upkeep Vehicle</th>
+                    <th scope="col">Mobile Phone Bill</th>
+                    <th scope="col">Printing</th>
+                    <th scope="col">Stationeries</th>
+                    <th scope="col">Stamping</th>
+                    <th scope="col">Staff Welfare</th>
+                    <th scope="col">Courier</th>
+                    <th scope="col">Office Sundries</th>
+                    <th scope="col">Dog Expenses</th>
+                    <th scope="col">Staff Training</th>
+                    <th scope="col">Stationary</th>
+                    <th scope="col">Subcon/Outsource Payment</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -79,6 +101,13 @@
     </div>
 
     <script>
+        const expenseTypes = [
+            'Gaji', 'Petrol', 'Toll', 'Parking', 'Staff Refreshment', 'Staff Entertainment',
+            'Client Entertainment', 'Medical', 'Mileage Claim', 'Hotel', 'Transport', 'Upkeep Office',
+            'Upkeep Vehicle', 'Mobile Phone Bill', 'Printing', 'Stationeries', 'Stamping', 'Staff Welfare',
+            'Courier', 'Office Sundries', 'Dog Expenses', 'Staff Training', 'Stationary', 'Subcon/Outsource Payment'
+        ];
+
         function formatMonth(value) {
             const date = new Date(value);
             const month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -113,11 +142,15 @@
             nameCell.textContent = name;
             const monthCell = document.createElement('td');
             monthCell.textContent = formattedMonth;
-            const expensesTypeCell = document.createElement('td');
-            expensesTypeCell.textContent = expensesType; // Initially set as text
-            expensesTypeCell.setAttribute('data-value', expensesType); // Store original value
-            const totalCell = document.createElement('td');
-            totalCell.textContent = total;
+
+            // Create cells for each expense type and set value to 0
+            const expenseCells = {};
+            expenseTypes.forEach(type => {
+                const cell = document.createElement('td');
+                cell.textContent = expensesType === type ? total : '0';
+                expenseCells[type] = cell;
+                newRow.appendChild(cell);
+            });
 
             // Create action buttons
             const actionCell = document.createElement('td');
@@ -137,8 +170,9 @@
             // Append cells to the row
             newRow.appendChild(nameCell);
             newRow.appendChild(monthCell);
-            newRow.appendChild(expensesTypeCell);
-            newRow.appendChild(totalCell);
+            expenseTypes.forEach(type => {
+                newRow.appendChild(expenseCells[type]);
+            });
             newRow.appendChild(actionCell);
 
             // Append row to the table body
@@ -155,8 +189,19 @@
             document.getElementById('inputName').value = cells[0].textContent;
             const [month, year] = cells[1].textContent.split('-');
             document.getElementById('inputMonth').value = `${year}-${month}`;
-            document.getElementById('inputExpensesType').value = cells[2].getAttribute('data-value');
-            document.getElementById('inputTotal').value = cells[3].textContent;
+
+            // Find the expense type and total
+            let expensesType = '';
+            let total = '';
+            expenseTypes.forEach((type, index) => {
+                if (cells[index + 2].textContent !== '0') {
+                    expensesType = type;
+                    total = cells[index + 2].textContent;
+                }
+            });
+
+            document.getElementById('inputExpensesType').value = expensesType;
+            document.getElementById('inputTotal').value = total;
 
             // Set hidden input to track the row index being edited
             document.getElementById('editRowIndex').value = Array.from(row.parentElement.children).indexOf(row);
@@ -179,9 +224,9 @@
             // Update row cells with form values
             row.children[0].textContent = name;
             row.children[1].textContent = formattedMonth;
-            row.children[2].textContent = expensesType;
-            row.children[2].setAttribute('data-value', expensesType);
-            row.children[3].textContent = total;
+            expenseTypes.forEach((type, cellIndex) => {
+                row.children[cellIndex + 2].textContent = expensesType === type ? total : '0';
+            });
 
             // Clear form fields and reset form button text
             document.getElementById('dataForm').reset();
